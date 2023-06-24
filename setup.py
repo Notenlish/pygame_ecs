@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name="pygame_ecs",
-    packages=["pygame_ecs"],
+    packages=["pygame_ecs", "pygame_ecs.components", "pygame_ecs.managers", "pygame_ecs.systems"],
     version="0.1",
     license="MIT",
     description="ECS system for pygame",
