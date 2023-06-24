@@ -6,16 +6,11 @@ Not finished rn, in development
 # Architecture
 
 Entities are just stored as int's for their id's
-components are stored in as lists in a dictionary.
-
-## Warning
-
-This was an easy way of implementing it but it will lead to increasing memory usage as more components are added. You probably shouldn't use this for a game with a lot of entities and components, but it's fine for small games.
+components are stored in as lists in a dictionary, keys are entity id's and values are component lists.
 
 # Notes
 
-This is not finished, and is in development
-Also, as I mentioned, you shouldn't use this for a game with a lot of entities and components, but it's fine for small games and testing.
+You shouldn't use this for a game with a lot of entities and components, but it's fine for small games and testing.
 
 # todo:
 

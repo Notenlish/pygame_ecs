@@ -1,7 +1,6 @@
-
-
 class Entity(object):
     __slots__ = ("_id",)
+
     def __init__(self, id):
         self._id = id
 
