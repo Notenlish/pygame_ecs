@@ -84,7 +84,8 @@ class App:
             entity = self.entity_manager.add_entity(self.component_manager)
             self.component_manager.add_component(entity, Position(center[0], center[1]))
             self.component_manager.add_component(entity, BallRenderer(radius, color))
-            self.component_manager.add_component(entity, Velocity(vel))
+            if random.randint(0, 1):
+                self.component_manager.add_component(entity, Velocity(vel))
             self.entities.append(entity)
 
     def draw(self):

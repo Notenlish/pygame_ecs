@@ -11,6 +11,8 @@ HEIGHT = 600
 
 
 class Position(pygame_ecs.BaseComponent):
+    __slots__ = ("x", "y")
+
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
@@ -18,6 +20,8 @@ class Position(pygame_ecs.BaseComponent):
 
 
 class BallRenderer(pygame_ecs.BaseComponent):
+    __slots__ = ("radius", "color")
+
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
@@ -25,6 +29,8 @@ class BallRenderer(pygame_ecs.BaseComponent):
 
 
 class Velocity(pygame_ecs.BaseComponent):
+    __slots__ = "vec"
+
     def __init__(self, vec: pygame.math.Vector2) -> None:
         super().__init__()
         self.vec = vec
@@ -66,13 +72,13 @@ class BallPhysics(pygame_ecs.BaseSystem):
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 window = Window.from_display_module()
 
+
 print(list(get_drivers()))
 # change based on drivers
 renderer = Renderer(window, index=3, accelerated=1)
 
-texture = Texture.from_surface(
-    renderer, pygame.image.load("test/circle.png")
-)
+
+texture = Texture.from_surface(renderer, pygame.image.load("test/circle.png"))
 
 entities = []
 entity_manager = pygame_ecs.EntityManager()
@@ -92,7 +98,7 @@ for _ in range(ENTITY_AMOUNT):
         random.randint(0, HEIGHT),
     )
     radius = random.randint(5, 15)
-    color = [255, 255, 255]
+    color = [random.randint(0, 255) for _ in range(3)]
     color.append(255)
     vel = pygame.math.Vector2(
         (random.random() - 0.5) * 400 / 1000,
@@ -100,7 +106,8 @@ for _ in range(ENTITY_AMOUNT):
     )
     entity = entity_manager.add_entity(component_manager)
     component_manager.add_component(entity, Position(center[0], center[1]))
-    component_manager.add_component(entity, Velocity(vel))
+    if random.randint(0, 1):
+        component_manager.add_component(entity, Velocity(vel))
     component_manager.add_component(entity, BallRenderer(radius, color))
     entities.append(entity)
 

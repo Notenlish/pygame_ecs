@@ -1,10 +1,13 @@
 from timeit import timeit
 import pygame_ecs
 import random
+from sys import argv
+
+cmds = argv[1]
 
 WIDTH = 800
 HEIGHT = 800
-ENTITY_AMOUNT = 1_000 * 10
+ENTITY_AMOUNT = 1_000 * 5
 
 
 class Position(pygame_ecs.BaseComponent):
@@ -58,7 +61,8 @@ for _ in range(ENTITY_AMOUNT):
     ]
     entity = entity_manager.add_entity(component_manager)
     component_manager.add_component(entity, Position(center[0], center[1]))
-    component_manager.add_component(entity, Velocity(vel))
+    if cmds[0] != "perfect":
+        component_manager.add_component(entity, Velocity(vel))
     entities.append(entity)
 
 
