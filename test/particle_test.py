@@ -70,7 +70,7 @@ class App:
         self.component_manager.add_component_type(BallRenderer)
 
     def add_entities(self):
-        for _ in range(1_000 * 50):
+        for _ in range(1_000 * 10):
             center = (
                 random.randint(0, self.screen.get_width()),
                 random.randint(0, self.screen.get_height()),

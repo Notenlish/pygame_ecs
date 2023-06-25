@@ -5,7 +5,7 @@ from pygame._sdl2 import Renderer, Texture, Window, get_drivers
 
 pygame.init()
 
-ENTITY_AMOUNT = 1_000 * 1
+ENTITY_AMOUNT = 5
 WIDTH = 800
 HEIGHT = 600
 
@@ -77,6 +77,7 @@ ball_draw_system = BallDrawSystem(renderer=renderer, texture=texture)
 
 component_manager.add_component_type(Position)
 component_manager.add_component_type(Velocity)
+component_manager.add_component_type(BallRenderer)
 
 
 for _ in range(ENTITY_AMOUNT):
@@ -84,7 +85,7 @@ for _ in range(ENTITY_AMOUNT):
         random.randint(0, WIDTH),
         random.randint(0, HEIGHT),
     )
-    radius = random.randint(2, 12)
+    radius = random.randint(5, 9)
     color = [random.randint(0, 255) for _ in range(3)]
     color.append(255)  # alpha
     vel = pygame.math.Vector2(
@@ -94,6 +95,7 @@ for _ in range(ENTITY_AMOUNT):
     entity = entity_manager.add_entity(component_manager)
     component_manager.add_component(entity, Position(center[0], center[1]))
     component_manager.add_component(entity, Velocity(vel))
+    component_manager.add_component(entity, BallRenderer(radius, color))
     entities.append(entity)
 
 
@@ -109,7 +111,6 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
     ball_physics.dt = dt
-
     system_manager.update_entities(entities, component_manager, ball_physics)
     system_manager.update_entities(entities, component_manager, ball_draw_system)
     renderer.present()
