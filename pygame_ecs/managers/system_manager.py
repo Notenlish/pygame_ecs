@@ -22,15 +22,13 @@ class SystemManager:
     ):
         for entity in entities:
             has_components = True
-            entity_components: list[
-                typing.Type[BaseComponent]
-            ] = component_manager.components[entity]
-            for required_component in system.required_component_types:
-                if required_component not in entity_components:
-                    has_components = True
+            components_to_give = {}
+            for comp_type in system.required_component_types:
+                try:
+                    comp = component_manager.components[comp_type][entity]
+                    components_to_give[type(comp)] = comp
+                except KeyError:
+                    has_components = False
                     break
             if has_components:
-                # print(f"System of type {system} updating entity of type {entity}.")
-                system.update(
-                    entity_components
-                )  # there should be a more optimised way of giving the components
+                system.update(components_to_give)
