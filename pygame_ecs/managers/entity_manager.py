@@ -10,11 +10,10 @@ class EntityManager:
     def add_entity(self, component_manager: ComponentManager):
         if len(self.dead_entities) > 0:
             entity = Entity(self.dead_entities.pop())
-            return entity
         else:
             entity = Entity(self.count)
             self.count += 1
-            return entity
+        return entity
 
     def kill_entity(self, component_manager: ComponentManager, entity: Entity):
         self.dead_entities.append(entity)
