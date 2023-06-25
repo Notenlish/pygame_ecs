@@ -1,5 +1,4 @@
 import random
-import typing
 import pygame
 import pygame_ecs
 

@@ -3,7 +3,7 @@ import pygame_ecs
 import random
 
 WIDTH = 800
-HEGIHT = 800
+HEIGHT = 800
 ENTITY_AMOUNT = 1_000 * 10
 
 
@@ -32,7 +32,7 @@ class BallPhysics(pygame_ecs.BaseSystem):
         pos.y += vel.vec[1]  # type: ignore
         if pos.x > WIDTH or pos.x < 0:
             vel.vec[0] *= -1
-        if pos.y > HEGIHT or pos.y < 0:
+        if pos.y > HEIGHT or pos.y < 0:
             vel.vec[1] *= -1
 
 
@@ -48,7 +48,7 @@ component_manager.add_component_type(Velocity)
 for _ in range(ENTITY_AMOUNT):
     center = (
         random.randint(0, WIDTH),
-        random.randint(0, HEGIHT),
+        random.randint(0, HEIGHT),
     )
     radius = random.randint(2, 12)
     color = [random.randint(0, 255) for _ in range(3)]
