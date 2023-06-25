@@ -65,9 +65,14 @@ class BallPhysics(pygame_ecs.BaseSystem):
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 window = Window.from_display_module()
-renderer = Renderer(window, accelerated=1)
 
-texture = Texture.from_surface(renderer, pygame.image.load("test/circle.png"))
+print(list(get_drivers()))
+# change based on drivers
+renderer = Renderer(window, index=3, accelerated=1)
+
+texture = Texture.from_surface(
+    renderer, pygame.image.load("test/circle.png")
+)
 
 entities = []
 entity_manager = pygame_ecs.EntityManager()
@@ -116,7 +121,8 @@ while running:
         0,
         0,
         255,
-    )  # type: ignore # renderer.draw_color is used for clearing the screen and drawing primitives
+    )  # type: ignore
+    # renderer.draw_color is used for clearing the screen and drawing primitives
     renderer.clear()
 
     ball_physics.dt = dt
