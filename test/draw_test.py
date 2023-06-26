@@ -1,66 +1,21 @@
-# Pygame_ecs
-
-An Pure Python, simple to use ECS library for pygame.
-
-## How it works
-
-Entities are just saved as integers
-
-```python
-entity = entity_manager.add_entity(component_manager)
-```
-
-Components are just classes that hold data
-
-```python
-class Position(pygame_ecs.BaseComponent):
-    def __init__(self, x: int, y: int):
-        super().__init__()
-        self.x = x
-        self.y = y
-```
-
-Systems are just classes that hold logic
-
-```python
-
-class BallPhysics(pygame_ecs.BaseSystem):
-    def __init__(self, screen) -> None:
-        super().__init__(required_component_types=[Position, Velocity])
-        self.dt = 0
-        self.screen = screen
-
-    def update(self, entity_components):
-        pos: Position = entity_components[Position]  # type: ignore
-        vel: Velocity = entity_components[Velocity]  # type: ignore
-        pos.x += vel.vec.x * self.dt  # type: ignore
-        pos.y += vel.vec.y * self.dt  # type: ignore
-        if pos.x > WIDTH or pos.x < 0:
-            vel.vec.x *= -1
-        if pos.y > HEIGHT or pos.y < 0:
-            vel.vec.y *= -1
-
-
-```
-
-## Example Usage
-```py
-
 import pygame
 import pygame_ecs
 import random
 
+
 class Position(pygame_ecs.BaseComponent):
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
+
 
 class BallRenderer(pygame_ecs.BaseComponent):
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
         self.color = color
+
 
 class BallDrawSystem(pygame_ecs.BaseSystem):
     def __init__(self, screen) -> None:
@@ -73,6 +28,7 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
         pygame.draw.circle(
             self.screen, ball_renderer.color, (pos.x, pos.y), ball_renderer.radius
         )
+
 
 screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
@@ -109,9 +65,3 @@ while True:
     pygame.display.update()
     clock.tick(60)
     pygame.display.set_caption(f"FPS: {clock.get_fps()}")
-```
-
-# Credits
-
-I'd like to give credit to https://www.youtube.com/watch?v=71RSWVyOMEY and https://github.com/seanfisk/ecs
-As well as `dickerdackel` from pgc server and `SamieZaurus#8030` from UnitOfTime's server.

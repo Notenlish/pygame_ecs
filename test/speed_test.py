@@ -45,8 +45,7 @@ component_manager = pygame_ecs.ComponentManager()
 system_manager = pygame_ecs.SystemManager()
 ball_physics = BallPhysics()
 
-component_manager.add_component_type(Position)
-component_manager.add_component_type(Velocity)
+component_manager.init_components()
 
 for _ in range(ENTITY_AMOUNT):
     center = (
