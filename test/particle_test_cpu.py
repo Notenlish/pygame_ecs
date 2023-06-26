@@ -64,10 +64,7 @@ class App:
         self.system_manager = pygame_ecs.SystemManager()
         self.ball_draw_system = BallDrawSystem(self.screen)
         self.ball_physics = BallPhysics(self.screen)
-
-        self.component_manager.add_component_type(Position)
-        self.component_manager.add_component_type(Velocity)
-        self.component_manager.add_component_type(BallRenderer)
+        self.component_manager.init_components()
 
     def add_entities(self):
         for _ in range(1_000 * 10):

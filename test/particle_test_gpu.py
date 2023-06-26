@@ -37,9 +37,8 @@ class Velocity(pygame_ecs.BaseComponent):
 
 
 class BallDrawSystem(pygame_ecs.BaseSystem):
-    def __init__(self, renderer, texture) -> None:
+    def __init__(self, texture: Texture) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
-        self.renderer = renderer
         self.texture = texture
 
     def update(self, entity_components):
@@ -85,11 +84,9 @@ entity_manager = pygame_ecs.EntityManager()
 component_manager = pygame_ecs.ComponentManager()
 system_manager = pygame_ecs.SystemManager()
 ball_physics = BallPhysics(screen)
-ball_draw_system = BallDrawSystem(renderer=renderer, texture=texture)
+ball_draw_system = BallDrawSystem(texture=texture)
 
-component_manager.add_component_type(Position)
-component_manager.add_component_type(Velocity)
-component_manager.add_component_type(BallRenderer)
+component_manager.init_components()
 
 
 for _ in range(ENTITY_AMOUNT):
@@ -115,6 +112,14 @@ for _ in range(ENTITY_AMOUNT):
 clock = pygame.time.Clock()
 dt = 0
 
+renderer.draw_color = (
+    0,
+    0,
+    0,
+    255,
+)  # type: ignore
+# renderer.draw_color is used for clearing the screen and drawing primitives
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -123,21 +128,13 @@ while running:
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
-    renderer.draw_color = (
-        0,
-        0,
-        0,
-        255,
-    )  # type: ignore
-    # renderer.draw_color is used for clearing the screen and drawing primitives
-    renderer.clear()
-
+    pygame.display.set_caption(f"FPS: {clock.get_fps()}")
     ball_physics.dt = dt
     system_manager.update_entities(entities, component_manager, ball_physics)
+
+    renderer.clear()
     system_manager.update_entities(entities, component_manager, ball_draw_system)
     renderer.present()
-
     dt = clock.tick(60)
-    pygame.display.set_caption(f"FPS: {clock.get_fps()}")
 
 pygame.quit()

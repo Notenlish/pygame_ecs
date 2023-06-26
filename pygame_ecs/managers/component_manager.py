@@ -11,14 +11,12 @@ ComponentInstanceType = typing.TypeVar("ComponentInstanceType", bound=BaseCompon
 class ComponentManager:
     def __init__(self) -> None:
         self.components: dict[typing.Type[BaseComponent], dict[Entity, ComponentInstanceType]] = {}  # type: ignore
-        # TODO: try changing the structure to:
-        # self.components: dict[ComponentType, dict[Entity, Component(instance)]]
 
-    def add_component_type(self, component_type):
-        self.components[component_type] = {}
-
-    def remove_component_type(self, component_type):
-        del self.components[component_type]
+    def init_components(self):
+        # get all subclasses using BaseComponent
+        component_subclasses = BaseComponent.__subclasses__()
+        for component_subclass in component_subclasses:
+            self.components[component_subclass] = {}
 
     def add_component(self, entity, component):
         self.components[type(component)][entity] = component
