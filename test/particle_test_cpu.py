@@ -78,7 +78,7 @@ class App:
                 (random.random() - 0.5) * 400 / 1000,
                 (random.random() - 0.5) * 400 / 1000,
             )
-            entity = self.entity_manager.add_entity(self.component_manager)
+            entity = self.entity_manager.add_entity()
             self.component_manager.add_component(entity, Position(center[0], center[1]))
             self.component_manager.add_component(entity, BallRenderer(radius, color))
             if random.randint(0, 1):

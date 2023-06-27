@@ -101,7 +101,7 @@ for _ in range(ENTITY_AMOUNT):
         (random.random() - 0.5) * 400 / 1000,
         (random.random() - 0.5) * 400 / 1000,
     )
-    entity = entity_manager.add_entity(component_manager)
+    entity = entity_manager.add_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
     if random.randint(0, 1):
         component_manager.add_component(entity, Velocity(vel))

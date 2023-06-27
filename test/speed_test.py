@@ -3,7 +3,10 @@ import pygame_ecs
 import random
 from sys import argv
 
-cmds = argv[1]
+try:
+    cmds = argv[1]
+except IndexError:
+    cmds = "perfect"
 
 WIDTH = 800
 HEIGHT = 800
@@ -44,7 +47,6 @@ entity_manager = pygame_ecs.EntityManager()
 component_manager = pygame_ecs.ComponentManager()
 system_manager = pygame_ecs.SystemManager()
 ball_physics = BallPhysics()
-
 component_manager.init_components()
 
 for _ in range(ENTITY_AMOUNT):
@@ -58,14 +60,35 @@ for _ in range(ENTITY_AMOUNT):
         (random.random() - 0.5) * 400 / 1000,
         (random.random() - 0.5) * 400 / 1000,
     ]
-    entity = entity_manager.add_entity(component_manager)
+    entity = entity_manager.add_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
     if cmds[0] != "perfect":
         component_manager.add_component(entity, Velocity(vel))
     entities.append(entity)
 
+for _ in range(1_000):
+    ent = entities[random.randint(0, len(entities) - 1)]
+    entity_manager.kill_entity(component_manager, ent)
+    entities.remove(ent)
+
+for _ in range(2_000):  # ensure that killing and then spawning entities doesnt break anything
+    center = (
+        random.randint(0, WIDTH),
+        random.randint(0, HEIGHT),
+    )
+    radius = random.randint(2, 12)
+    color = [random.randint(0, 255) for _ in range(3)]
+    vel = [
+        (random.random() - 0.5) * 400 / 1000,
+        (random.random() - 0.5) * 400 / 1000,
+    ]
+    entity = entity_manager.add_entity()
+    component_manager.add_component(entity, Position(center[0], center[1]))
+    if cmds[0] != "perfect":
+        component_manager.add_component(entity, Velocity(vel))
+    entities.append(entity)
 
 REPEAT = 1_000
 
 res = timeit(lambda: system_manager.update_entities(entities, component_manager, ball_physics), number=REPEAT)  # type: ignore
-print(f"Took {res/REPEAT} roughly for each frame, using {ENTITY_AMOUNT} entities")
+print(f"Took {res/REPEAT} roughly for each frame, using {len(entities)} entities")
