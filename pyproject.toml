@@ -1,7 +1,7 @@
 
 [project]
 name = "pygame_ecs"
-version = "0.2.1"
+version = "0.2.2"
 authors = [
   { name="Notenlish", email="71970100+Notenlish@users.noreply.github.com" },
 ]
