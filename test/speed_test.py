@@ -5,6 +5,8 @@ from sys import argv
 
 try:
     cmds = argv[1]
+    if cmds != "perfect":
+        cmds = "imperfect"
 except IndexError:
     cmds = "perfect"
 
@@ -62,7 +64,7 @@ for _ in range(ENTITY_AMOUNT):
     ]
     entity = entity_manager.add_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
-    if cmds[0] != "perfect":
+    if cmds[0] == "imperfect":
         component_manager.add_component(entity, Velocity(vel))
     entities.append(entity)
 
@@ -71,7 +73,9 @@ for _ in range(1_000):
     entity_manager.kill_entity(component_manager, ent)
     entities.remove(ent)
 
-for _ in range(2_000):  # ensure that killing and then spawning entities doesnt break anything
+for _ in range(
+    2_000
+):  # ensure that killing and then spawning entities doesnt break anything
     center = (
         random.randint(0, WIDTH),
         random.randint(0, HEIGHT),
@@ -84,11 +88,13 @@ for _ in range(2_000):  # ensure that killing and then spawning entities doesnt 
     ]
     entity = entity_manager.add_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
-    if cmds[0] != "perfect":
+    if cmds[0] == "imperfect":
         component_manager.add_component(entity, Velocity(vel))
     entities.append(entity)
 
 REPEAT = 1_000
 
 res = timeit(lambda: system_manager.update_entities(entities, component_manager, ball_physics), number=REPEAT)  # type: ignore
-print(f"Took {res/REPEAT} roughly for each frame, using {len(entities)} entities")
+print(
+    f"Took {res/REPEAT} roughly for each frame, using {len(entities)} entities, setting: {cmds}"
+)
