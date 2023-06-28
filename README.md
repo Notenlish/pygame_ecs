@@ -12,7 +12,7 @@ entity = entity_manager.add_entity()
 
 You can delete an entity like this:
 ```python
-    entity_manager.kill_entity(entity)
+entity_manager.kill_entity(entity)
 ```
 
 Components are just classes that hold data
