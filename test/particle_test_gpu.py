@@ -77,7 +77,7 @@ def add_entity(component_manager, entity_manager, amount=1):
             random.randint(0, WIDTH),
             random.randint(0, HEIGHT),
         )
-        radius = random.randint(5, 15)
+        radius = random.randint(10, 15)
         color = [random.randint(0, 255) for _ in range(3)]
         color.append(255)
         vel = pygame.math.Vector2(
