@@ -78,7 +78,7 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
 
-    def update(self, entity, entity_components):
+    def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]
         ball_renderer: BallRenderer = entity_components[BallRenderer]
         pygame.draw.circle(
