@@ -7,16 +7,12 @@ An Pure Python, simple to use ECS library for pygame.
 Create an entity
 
 ```python
-entities = []
-entity = entity_manager.add_entity(component_manager)
-entities.append(entity)
+entity = entity_manager.add_entity()
 ```
 
 You can delete an entity like this:
 ```python
-    entity = entities[random.randint(0, len(entities) - 1)]
-    entity_manager.kill_entity(component_manager, entity)
-    entities.remove(entity)
+    entity_manager.kill_entity(entity)
 ```
 
 Components are just classes that hold data
@@ -39,7 +35,7 @@ class BallPhysics(pygame_ecs.BaseSystem):
         self.dt = 0
         self.screen = screen
 
-    def update(self, entity_components):
+    def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]
         vel: Velocity = entity_components[Velocity]
         pos.x += vel.vec.x * self.dt
@@ -48,7 +44,6 @@ class BallPhysics(pygame_ecs.BaseSystem):
             vel.vec.x *= -1
         if pos.y > HEIGHT or pos.y < 0:
             vel.vec.y *= -1
-
 
 ```
 
