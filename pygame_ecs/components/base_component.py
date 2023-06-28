@@ -4,5 +4,8 @@ class BaseComponent:
     def __init__(self) -> None:
         pass
 
-    def __str__(self) -> str:
-        return f"{type(self).__name__} {self.__dict__()}"
+    def __repr__(self):
+        return f"<Component {type(self).__name__}>"
+
+    def __str__(self):
+        return f"<Component {type(self).__name__}>"

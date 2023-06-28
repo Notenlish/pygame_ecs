@@ -22,7 +22,7 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
 
-    def update(self, entity_components):
+    def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]
         ball_renderer: BallRenderer = entity_components[BallRenderer]
         pygame.draw.circle(
@@ -33,14 +33,14 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
 screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
-entity_manager = pygame_ecs.EntityManager()
 component_manager = pygame_ecs.ComponentManager()
-system_manager = pygame_ecs.SystemManager()
+entity_manager = pygame_ecs.EntityManager(component_manager)
+system_manager = pygame_ecs.SystemManager(entity_manager, component_manager)
 ball_draw_system = BallDrawSystem(screen)
+system_manager.add_system(ball_draw_system)
 component_manager.init_components()
 
-entities = []
-for _ in range(100):
+for _ in range(200):
     center = (
         random.randint(0, screen.get_width()),
         random.randint(0, screen.get_height()),
@@ -54,14 +54,13 @@ for _ in range(100):
     entity = entity_manager.add_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
     component_manager.add_component(entity, BallRenderer(radius, color))
-    entities.append(entity)
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             raise SystemExit
 
-    system_manager.update_entities(entities, component_manager, ball_draw_system)
+    system_manager.update_entities()
     pygame.display.update()
     clock.tick(60)
     pygame.display.set_caption(f"FPS: {clock.get_fps()}")

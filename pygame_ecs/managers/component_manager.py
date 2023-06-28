@@ -19,6 +19,12 @@ class ComponentManager:
             self.components[component_subclass] = {}
 
     def add_component(self, entity, component):
+        """Adds a component to an entity
+
+        Args:
+            entity (Entity): Entity instance
+            component (BaseComponent): Component that subclasses BaseComponent
+        """
         self.components[type(component)][entity] = component
 
     def remove_component(self, entity, component_type):

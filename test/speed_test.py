@@ -4,15 +4,20 @@ import random
 from sys import argv
 
 try:
-    cmds = argv[1]
-    if cmds != "perfect":
-        cmds = "imperfect"
+    arg = argv[1]
+    if arg != "perfect":
+        arg = "imperfect"
 except IndexError:
-    cmds = "perfect"
+    arg = "perfect"
 
 WIDTH = 800
 HEIGHT = 800
-ENTITY_AMOUNT = 1_000 * 5
+ENTITY_AMOUNT = 1_000 * 4
+
+# TODO: put entities as a list in entity_manager
+# Also make the component manager be kept as a reference in the system_manager
+# I can insert EntityManager reference into BaseSystem Subclasses using the same method I've used with components nvm i cant lol
+# actually add the systems into
 
 
 class Position(pygame_ecs.BaseComponent):
@@ -31,9 +36,8 @@ class Velocity(pygame_ecs.BaseComponent):
 class BallPhysics(pygame_ecs.BaseSystem):
     def __init__(self) -> None:
         super().__init__(required_component_types=[Position, Velocity])
-        self.dt = 0
 
-    def update(self, entity_components):
+    def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]  # type: ignore
         vel: Velocity = entity_components[Velocity]  # type: ignore
         pos.x += vel.vec[0]  # type: ignore
@@ -44,11 +48,11 @@ class BallPhysics(pygame_ecs.BaseSystem):
             vel.vec[1] *= -1
 
 
-entities = []
-entity_manager = pygame_ecs.EntityManager()
 component_manager = pygame_ecs.ComponentManager()
-system_manager = pygame_ecs.SystemManager()
+entity_manager = pygame_ecs.EntityManager(component_manager)
+system_manager = pygame_ecs.SystemManager(entity_manager, component_manager)
 ball_physics = BallPhysics()
+system_manager.add_system(ball_physics)
 component_manager.init_components()
 
 for _ in range(ENTITY_AMOUNT):
@@ -64,17 +68,15 @@ for _ in range(ENTITY_AMOUNT):
     ]
     entity = entity_manager.add_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
-    if cmds[0] == "imperfect":
+    if arg == "perfect":
         component_manager.add_component(entity, Velocity(vel))
-    entities.append(entity)
 
-for _ in range(1_000):
-    ent = entities[random.randint(0, len(entities) - 1)]
-    entity_manager.kill_entity(component_manager, ent)
-    entities.remove(ent)
+for entity in entity_manager.entities.keys():
+    entity_manager.kill_entity(entity)
+entity_manager._clear_limbo()
 
 for _ in range(
-    2_000
+    ENTITY_AMOUNT + 1_000
 ):  # ensure that killing and then spawning entities doesnt break anything
     center = (
         random.randint(0, WIDTH),
@@ -88,13 +90,12 @@ for _ in range(
     ]
     entity = entity_manager.add_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
-    if cmds[0] == "imperfect":
+    if arg == "perfect":
         component_manager.add_component(entity, Velocity(vel))
-    entities.append(entity)
 
 REPEAT = 1_000
 
-res = timeit(lambda: system_manager.update_entities(entities, component_manager, ball_physics), number=REPEAT)  # type: ignore
+res = timeit(lambda: system_manager.update_entities(), number=REPEAT)  # type: ignore
 print(
-    f"Took {res/REPEAT} roughly for each frame, using {len(entities)} entities, setting: {cmds}"
+    f"Took {res/REPEAT} roughly for each frame, using {len(entity_manager.entities)} entities, setting: {arg}"
 )

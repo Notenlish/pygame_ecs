@@ -28,7 +28,7 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
 
-    def update(self, entity_components):
+    def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]  # type: ignore
         ball_renderer: BallRenderer = entity_components[BallRenderer]  # type: ignore
         pygame.draw.circle(self.screen, ball_renderer.color, (pos.x, pos.y), ball_renderer.radius)  # type: ignore
@@ -40,7 +40,7 @@ class BallPhysics(pygame_ecs.BaseSystem):
         self.dt = 0
         self.screen = screen
 
-    def update(self, entity_components):
+    def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]  # type: ignore
         vel: Velocity = entity_components[Velocity]  # type: ignore
         pos.x += vel.vec.x * self.dt  # type: ignore
@@ -58,12 +58,15 @@ class App:
         self.dt = 0
 
     def setup(self):
-        self.entities = []
-        self.entity_manager = pygame_ecs.EntityManager()
         self.component_manager = pygame_ecs.ComponentManager()
-        self.system_manager = pygame_ecs.SystemManager()
+        self.entity_manager = pygame_ecs.EntityManager(self.component_manager)
+        self.system_manager = pygame_ecs.SystemManager(
+            self.entity_manager, self.component_manager
+        )
         self.ball_draw_system = BallDrawSystem(self.screen)
         self.ball_physics = BallPhysics(self.screen)
+        self.system_manager.add_system(self.ball_draw_system)
+        self.system_manager.add_system(self.ball_physics)
         self.component_manager.init_components()
 
     def add_entities(self):
@@ -83,13 +86,6 @@ class App:
             self.component_manager.add_component(entity, BallRenderer(radius, color))
             if random.randint(0, 1):
                 self.component_manager.add_component(entity, Velocity(vel))
-            self.entities.append(entity)
-
-    def draw(self):
-        self.screen.fill("black")
-        self.system_manager.update_entities(
-            self.entities, self.component_manager, self.ball_draw_system
-        )
 
     def run(self):
         self.setup()
@@ -97,8 +93,9 @@ class App:
         while True:
             pygame.display.set_caption(f"FPS: {self.clock.get_fps()}")
             self.get_input()
-            self.update()
-            self.draw()
+            self.screen.fill("black")
+            self.ball_physics.dt = self.dt
+            self.system_manager.update_entities()
             self.dt = self.clock.tick(60)
             pygame.display.update()
 
