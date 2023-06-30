@@ -95,7 +95,7 @@ for _ in range(
 
 REPEAT = 1_000
 
-res = timeit(lambda: system_manager.update_entities(), number=REPEAT)  # type: ignore
+result = timeit(lambda: system_manager.update_entities(), number=REPEAT)  # type: ignore
 print(
-    f"Took {res/REPEAT} roughly for each frame, using {len(entity_manager.entities)} entities, setting: {arg}"
+    f"Took a total of {result} and {result/REPEAT} roughly for each frame, using {len(entity_manager.entities)} entities, setting: {arg}"
 )
