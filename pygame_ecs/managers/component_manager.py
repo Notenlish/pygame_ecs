@@ -9,6 +9,7 @@ ComponentInstanceType = typing.TypeVar("ComponentInstanceType", bound=BaseCompon
 
 
 class ComponentManager:
+    __slots__ = ("components",)
     def __init__(self) -> None:
         self.components: dict[typing.Type[BaseComponent], dict[Entity, ComponentInstanceType]] = {}  # type: ignore
 

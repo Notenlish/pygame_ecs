@@ -4,6 +4,7 @@ import pygame_ecs
 
 
 class Position(pygame_ecs.BaseComponent):
+    __slots__ = ("x", "y")
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
@@ -11,6 +12,7 @@ class Position(pygame_ecs.BaseComponent):
 
 
 class BallRenderer(pygame_ecs.BaseComponent):
+    __slots__ = ("radius", "color")
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
@@ -18,12 +20,14 @@ class BallRenderer(pygame_ecs.BaseComponent):
 
 
 class Velocity(pygame_ecs.BaseComponent):
+    __slots__ = ("vec",)
     def __init__(self, vec: pygame.math.Vector2) -> None:
         super().__init__()
         self.vec = vec
 
 
 class BallDrawSystem(pygame_ecs.BaseSystem):
+    __slots__ = ("screen",)
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
@@ -35,6 +39,7 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
 
 
 class BallPhysics(pygame_ecs.BaseSystem):
+    __slots__ = ("dt", "screen")
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, Velocity])
         self.dt = 0

@@ -8,6 +8,7 @@ SystemType = typing.TypeVar("SystemType", bound=BaseSystem)
 
 
 class SystemManager:
+    __slots__ = ("entity_manager", "component_manager", "systems")
     def __init__(
         self, entity_manager: EntityManager, component_manager: ComponentManager
     ) -> None:

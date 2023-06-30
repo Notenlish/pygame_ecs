@@ -4,6 +4,7 @@ from pygame_ecs.exceptions import EntityAlreadyInLimbo
 
 
 class EntityManager:
+    __slots__ = ("component_manager", "entities", "dead_entities", "_limbo", "count")
     def __init__(self, component_manager: ComponentManager) -> None:
         self.component_manager = component_manager
         self.entities: dict[Entity, None] = {}
