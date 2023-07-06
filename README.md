@@ -2,6 +2,9 @@
 
 An Pure Python, simple to use ECS library for pygame.
 
+To install it, do:
+`pip install pygame-ecs`
+
 ## How it works
 
 Create an entity
