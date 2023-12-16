@@ -1,11 +1,12 @@
 # Modified version of code created by kirro_yt from discord
 
-import pygame
-import pygame_ecs
+import math
 import random
 import time
-import math
 
+import pygame
+
+import pygame_ecs
 from pygame_ecs.components.base_component import BaseComponent
 from pygame_ecs.entity import Entity
 
@@ -105,7 +106,7 @@ for _ in range(2000):
     component_manager.add_component(entity, velocity)
 
 while True:
-    screen.fill((0, 0, 0))
+    screen.fill((34, 4, 6))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             raise SystemExit

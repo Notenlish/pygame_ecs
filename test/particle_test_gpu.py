@@ -1,9 +1,10 @@
-import typing
-import pygame
 import random
-import pygame_ecs
+import typing
+
+import pygame
 from pygame._sdl2 import Renderer, Texture, Window, get_drivers
 
+import pygame_ecs
 from pygame_ecs.components.base_component import BaseComponent
 
 pygame.init()

@@ -4,7 +4,6 @@ from pygame_ecs.components.base_component import BaseComponent
 from pygame_ecs.entity import Entity
 from pygame_ecs.exceptions import EntityDoesNotHaveComponent
 
-
 ComponentInstanceType = typing.TypeVar("ComponentInstanceType", bound=BaseComponent)
 
 

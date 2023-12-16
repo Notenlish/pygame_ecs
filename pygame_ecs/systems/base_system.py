@@ -1,8 +1,9 @@
 import typing
+
 from pygame_ecs.components.base_component import BaseComponent
+from pygame_ecs.entity import Entity
 from pygame_ecs.managers.component_manager import ComponentInstanceType
 from pygame_ecs.managers.entity_manager import EntityManager
-from pygame_ecs.entity import Entity
 
 
 class BaseSystem:

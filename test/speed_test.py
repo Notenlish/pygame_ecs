@@ -1,7 +1,8 @@
-from timeit import timeit
-import pygame_ecs
 import random
 from sys import argv
+from timeit import timeit
+
+import pygame_ecs
 
 try:
     arg = argv[1]

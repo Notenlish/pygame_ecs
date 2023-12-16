@@ -1,5 +1,7 @@
 import random
+
 import pygame
+
 import pygame_ecs
 
 

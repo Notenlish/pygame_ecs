@@ -1,8 +1,8 @@
 import typing
 
-from pygame_ecs.systems.base_system import BaseSystem
 from pygame_ecs.managers.component_manager import ComponentManager
 from pygame_ecs.managers.entity_manager import EntityManager
+from pygame_ecs.systems.base_system import BaseSystem
 
 SystemType = typing.TypeVar("SystemType", bound=BaseSystem)
 

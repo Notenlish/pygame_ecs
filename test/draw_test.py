@@ -1,6 +1,8 @@
-import pygame
-import pygame_ecs
 import random
+
+import pygame
+
+import pygame_ecs
 
 
 class Position(pygame_ecs.BaseComponent):
