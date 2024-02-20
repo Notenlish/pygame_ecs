@@ -1,6 +1,6 @@
 # Pygame_ecs
 
-An Pure Python, simple to use ECS library for pygame.
+An Pure Python, simple to use ECS(Entity Component System) library for pygame.
 
 To install it, do:
 `pip install pygame-ecs`
