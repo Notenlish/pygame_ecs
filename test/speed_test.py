@@ -41,8 +41,8 @@ class BallPhysics(pygame_ecs.BaseSystem):
         super().__init__(required_component_types=[Position, Velocity])
 
     def update_entity(self, entity, entity_components):
-        pos: Position = entity_components[Position]  # type: ignore
-        vel: Velocity = entity_components[Velocity]  # type: ignore
+        pos: Position = entity_components[0]  # type: ignore
+        vel: Velocity = entity_components[1]  # type: ignore
         pos.x += vel.vec[0]  # type: ignore
         pos.y += vel.vec[1]  # type: ignore
         if pos.x > WIDTH or pos.x < 0:

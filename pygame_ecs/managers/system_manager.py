@@ -3,12 +3,14 @@ import typing
 from pygame_ecs.managers.component_manager import ComponentManager
 from pygame_ecs.managers.entity_manager import EntityManager
 from pygame_ecs.systems.base_system import BaseSystem
+from pygame_ecs.exceptions import EntityDoesNotHaveComponent
 
 SystemType = typing.TypeVar("SystemType", bound=BaseSystem)
 
 
 class SystemManager:
-    __slots__ = ("entity_manager", "component_manager", "systems")
+    __slots__ = ("entity_manager", "component_manager", "systems", "components")
+
     def __init__(
         self, entity_manager: EntityManager, component_manager: ComponentManager
     ) -> None:
@@ -27,21 +29,22 @@ class SystemManager:
         """Updates all of the systems that are active.
         NOTE: For updating values of systems, just set their values before calling this function.
         """
+        # TODO: fix
         for system in self.systems:
             if len(system.required_component_types) > 0:
                 for entity in self.entity_manager.entities.keys():
-                    has_components = True
-                    components_to_give = {}
-                    for comp_type in system.required_component_types:
-                        try:
-                            comp = self.component_manager.components[comp_type][entity]
-                            components_to_give[type(comp)] = comp
-                        except KeyError:
-                            self.component_manager.components[comp_type]
-                            has_components = False
-                            break
-                    if has_components:
-                        system.update_entity(entity, components_to_give)
+                    try:
+                        # TODO: Potential problem: Function call overhead
+                        # How to fix? Get rid of component manager and do it all on backend???
+                        # also TODO: allow multiple ecs's eg: list based ecs for particle systems
+                        # sparse set for different kinds of entities with vastly different components etc.
+                        # Would require some work though..
+                        components = self.component_manager.get_entity_components(
+                            entity, system.required_component_types
+                        )
+                        system.update_entity(entity, components)
+                    except EntityDoesNotHaveComponent:
+                        pass
             else:
                 system.update()
         self.entity_manager._clear_limbo()

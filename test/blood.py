@@ -1,5 +1,6 @@
 # Modified version of code created by kirro_yt from discord
 
+import sys
 import math
 import random
 import time
@@ -7,8 +8,16 @@ import time
 import pygame
 
 import pygame_ecs
-from pygame_ecs.components.base_component import BaseComponent
+from pygame_ecs.components.base import BaseComponent
+from pygame_ecs.systems.base_system import BaseSystem
 from pygame_ecs.entity import Entity
+
+try:
+    arg = sys.argv[1]
+    if arg != "delete":
+        arg = "keep"
+except IndexError:
+    arg = "keep"
 
 start = time.time()
 
@@ -16,21 +25,21 @@ WIDTH = 800
 HEIGHT = 600
 
 
-class Position(pygame_ecs.BaseComponent):
+class Position(BaseComponent):
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
 
 
-class BallRenderer(pygame_ecs.BaseComponent):
+class BallRenderer(BaseComponent):
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
         self.color = color
 
 
-class Velocity(pygame_ecs.BaseComponent):
+class Velocity(BaseComponent):
     def __init__(
         self, vel: pygame.math.Vector2, time_offset: float | int, wave_length: float
     ) -> None:
@@ -40,28 +49,28 @@ class Velocity(pygame_ecs.BaseComponent):
         self.wave_length = wave_length
 
 
-class BallDrawSystem(pygame_ecs.BaseSystem):
+class BallDrawSystem(BaseSystem):
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
 
     def update_entity(self, entity, entity_components):
-        pos: Position = entity_components[Position]
-        ball_renderer: BallRenderer = entity_components[BallRenderer]
+        pos: Position = entity_components[0]
+        ball_renderer: BallRenderer = entity_components[1]
         pygame.draw.circle(
             self.screen, ball_renderer.color, (pos.x, pos.y), ball_renderer.radius
         )
 
 
-class BallPhysics(pygame_ecs.BaseSystem):
+class BallPhysics(BaseSystem):
     def __init__(self, dt) -> None:
         super().__init__(required_component_types=[Position, Velocity, BallRenderer])
         self.dt = dt
 
     def update_entity(self, entity: Entity, entity_components):
-        pos: Position = entity_components[Position]
-        velocity: Velocity = entity_components[Velocity]
-        ball_renderer: BallRenderer = entity_components[BallRenderer]
+        pos: Position = entity_components[0]
+        velocity: Velocity = entity_components[1]
+        ball_renderer: BallRenderer = entity_components[2]
         pos.y += (
             math.sin(time.time() - start + velocity.time_offset)
             * (1 / ball_renderer.radius)
@@ -69,6 +78,9 @@ class BallPhysics(pygame_ecs.BaseSystem):
         )
         pos.x += velocity.vel.x * self.dt
         if pos.x > WIDTH + ball_renderer.radius:
+            if arg == "delete":
+                # entity_manager.kill_entity(entity)
+                component_manager.remove_component(entity, type(velocity))
             pos.x = -ball_renderer.radius
         if pos.x < -ball_renderer.radius:
             pos.x = WIDTH + ball_renderer.radius
@@ -115,4 +127,6 @@ while True:
     system_manager.update_entities()
     pygame.display.update()
     clock.tick(60)
-    pygame.display.set_caption(f"FPS: {clock.get_fps()}")
+    pygame.display.set_caption(
+        f"FPS: {clock.get_fps():.0f} | Entities: {len(entity_manager.entities)}"
+    )

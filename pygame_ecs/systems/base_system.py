@@ -1,12 +1,14 @@
 import typing
 
-from pygame_ecs.components.base_component import BaseComponent
+from pygame_ecs.components.base import BaseComponent
 from pygame_ecs.entity import Entity
 from pygame_ecs.managers.component_manager import ComponentInstanceType
 from pygame_ecs.managers.entity_manager import EntityManager
 
 
 class BaseSystem:
+    """A base system that all Systems must inherit from."""
+
     # typing.Type specifies that it will take subclasses of this class
     def __init__(
         self, required_component_types: list[typing.Type[BaseComponent]]
