@@ -1,5 +1,9 @@
 # ignore this, I keep my notes in here
 .optimization.md
+.old-speed-venv
+
+# for profiling performance
+*.prof
 
 .pypirc
 

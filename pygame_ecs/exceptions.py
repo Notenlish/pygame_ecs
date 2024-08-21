@@ -1,11 +1,8 @@
 class EntityDoesNotHaveComponent(Exception):
-    def __init__(self, entity, component_type) -> None:
-        msg = f"""Entity of id {entity} doesn't have component of type {component_type} that can be accessed.
-        You may have accidentally passed the component instead of its type."""
-        super().__init__(msg)
+    def __init__(self) -> None:
+        super().__init__()
 
 
 class EntityAlreadyInLimbo(Exception):
-    def __init__(self, entity) -> None:
-        msg = f"{entity} is already in limbo(has been killed before)"
-        super().__init__(msg)
+    def __init__(self) -> None:
+        super().__init__()

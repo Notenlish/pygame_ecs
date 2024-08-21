@@ -25,6 +25,7 @@ ENTITY_AMOUNT = 1_000 * 4
 
 class Position(pygame_ecs.BaseComponent):
     __slots__ = ("x", "y")
+
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
@@ -33,6 +34,7 @@ class Position(pygame_ecs.BaseComponent):
 
 class Velocity(pygame_ecs.BaseComponent):
     __slots__ = ("vec",)
+
     def __init__(self, vec: list[int | float]) -> None:
         super().__init__()
         self.vec = vec
@@ -43,8 +45,8 @@ class BallPhysics(pygame_ecs.BaseSystem):
         super().__init__(required_component_types=[Position, Velocity])
 
     def update_entity(self, entity, entity_components):
-        pos: Position = entity_components[0]  # type: ignore
-        vel: Velocity = entity_components[1]  # type: ignore
+        pos: Position = entity_components[Position]  # type: ignore
+        vel: Velocity = entity_components[Velocity]  # type: ignore
         pos.x += vel.vec[0]  # type: ignore
         pos.y += vel.vec[1]  # type: ignore
         if pos.x > WIDTH or pos.x < 0:

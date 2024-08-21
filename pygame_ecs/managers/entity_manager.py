@@ -34,7 +34,7 @@ class EntityManager:
         """
         try:
             self._limbo[entity]
-            raise EntityAlreadyInLimbo(entity)
+            raise EntityAlreadyInLimbo()
         except KeyError:  # not in limbo
             self._limbo[entity] = None
         for component_type in self.component_manager.get_component_types():
