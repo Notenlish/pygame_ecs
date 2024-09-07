@@ -1,1 +1,1 @@
-from pygame_ecs.systems.base_system import System
+from pygame_ecs.systems.base_system import System  # noqa

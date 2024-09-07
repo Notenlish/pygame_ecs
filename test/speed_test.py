@@ -1,8 +1,11 @@
+import ez_profile  # noqa
 import random
 from sys import argv
 from timeit import timeit
 
-import pygame_ecs
+from pygame_ecs.components.base_component import Component
+from pygame_ecs.managers import ComponentManager, EntityManager, SystemManager
+from pygame_ecs.systems import System
 
 try:
     arg = argv[1]
@@ -21,7 +24,7 @@ ENTITY_AMOUNT = 1_000 * 4
 # actually add the systems into
 
 
-class Position(pygame_ecs.Component):
+class Position(Component):
     __slots__ = ("x", "y")
 
     def __init__(self, x: int, y: int):
@@ -30,7 +33,7 @@ class Position(pygame_ecs.Component):
         self.y = y
 
 
-class Velocity(pygame_ecs.Component):
+class Velocity(Component):
     __slots__ = ("vec",)
 
     def __init__(self, vec: list[int | float]) -> None:
@@ -38,7 +41,7 @@ class Velocity(pygame_ecs.Component):
         self.vec = vec
 
 
-class BallPhysics(pygame_ecs.BaseSystem):
+class BallPhysics(System):
     def __init__(self) -> None:
         super().__init__(required_component_types=[Position, Velocity])
 
@@ -53,9 +56,9 @@ class BallPhysics(pygame_ecs.BaseSystem):
             vel.vec[1] *= -1
 
 
-component_manager = pygame_ecs.ComponentManager()
-entity_manager = pygame_ecs.EntityManager(component_manager)
-system_manager = pygame_ecs.SystemManager(entity_manager, component_manager)
+component_manager = ComponentManager()
+entity_manager = EntityManager(component_manager)
+system_manager = SystemManager(entity_manager, component_manager)
 ball_physics = BallPhysics()
 system_manager.add_system(ball_physics)
 component_manager.init_components()

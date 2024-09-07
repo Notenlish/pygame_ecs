@@ -1,11 +1,13 @@
 import random
-import typing
 
 import pygame
-from pygame._sdl2 import Renderer, Texture, Window, get_drivers
+from pygame._sdl2 import Renderer, Texture, Window
 
-import pygame_ecs
+
 from pygame_ecs.components.base_component import Component
+from pygame_ecs.managers import ComponentManager, EntityManager, SystemManager
+from pygame_ecs.systems import System
+from pygame_ecs.exceptions import EntityAlreadyInLimbo
 
 pygame.init()
 
@@ -14,7 +16,7 @@ WIDTH = 800
 HEIGHT = 600
 
 
-class Position(pygame_ecs.Component):
+class Position(Component):
     __slots__ = ("x", "y")
 
     def __init__(self, x: int, y: int):
@@ -23,7 +25,7 @@ class Position(pygame_ecs.Component):
         self.y = y
 
 
-class BallRenderer(pygame_ecs.Component):
+class BallRenderer(Component):
     __slots__ = ("radius", "color")
 
     def __init__(self, radius: int, color) -> None:
@@ -32,7 +34,7 @@ class BallRenderer(pygame_ecs.Component):
         self.color = color
 
 
-class Velocity(pygame_ecs.Component):
+class Velocity(Component):
     __slots__ = "vec"
 
     def __init__(self, vec: pygame.math.Vector2) -> None:
@@ -40,7 +42,7 @@ class Velocity(pygame_ecs.Component):
         self.vec = vec
 
 
-class BallDrawSystem(pygame_ecs.BaseSystem):
+class BallDrawSystem(System):
     def __init__(self, texture: Texture) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.texture = texture
@@ -55,11 +57,10 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
         )
 
 
-class BallPhysics(pygame_ecs.BaseSystem):
-    def __init__(self, screen) -> None:
+class BallPhysics(System):
+    def __init__(self) -> None:
         super().__init__(required_component_types=[Position, Velocity])
         self.dt = 0
-        self.screen = screen
 
     def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]  # type: ignore
@@ -91,18 +92,18 @@ def add_entity(component_manager, entity_manager, amount=1):
         component_manager.add_component(entity, BallRenderer(radius, color))
 
 
-def remove_entity(entity_manager: pygame_ecs.EntityManager, amount=1):
+def remove_entity(entity_manager: EntityManager, amount=1):
     if len(entity_manager.entities) < amount:
         return
     for _ in range(amount):
         entity = random.choice(list(entity_manager.entities.keys()))
         try:
             entity_manager.kill_entity(entity)
-        except pygame_ecs.EntityAlreadyInLimbo:
+        except EntityAlreadyInLimbo:
             pass
 
 
-class BallAdd(pygame_ecs.BaseSystem):
+class BallAdd(System):
     def __init__(self, component_manager, entity_manager) -> None:
         super().__init__(required_component_types=[])
         self.component_manager = component_manager
@@ -115,21 +116,20 @@ class BallAdd(pygame_ecs.BaseSystem):
             remove_entity(entity_manager, amount=50)
 
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-window = Window.from_display_module()
+# screen = pygame.display.set_mode((WIDTH, HEIGHT))
+window = Window(size=(WIDTH, HEIGHT))
 
 
-print(list(get_drivers()))
 # change based on drivers
 renderer = Renderer(window, index=3, accelerated=1)
 
 
 texture = Texture.from_surface(renderer, pygame.image.load("test/circle.png"))
 
-component_manager = pygame_ecs.ComponentManager()
-entity_manager = pygame_ecs.EntityManager(component_manager)
-system_manager = pygame_ecs.SystemManager(entity_manager, component_manager)
-ball_physics = BallPhysics(screen)
+component_manager = ComponentManager()
+entity_manager = EntityManager(component_manager)
+system_manager = SystemManager(entity_manager, component_manager)
+ball_physics = BallPhysics()
 ball_draw_system = BallDrawSystem(texture=texture)
 ball_add = BallAdd(component_manager, entity_manager)
 system_manager.add_system(ball_draw_system)
