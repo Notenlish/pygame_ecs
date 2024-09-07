@@ -1,5 +1,3 @@
-import ez_profile
-
 import random
 from sys import argv
 from timeit import timeit

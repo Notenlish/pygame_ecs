@@ -21,8 +21,7 @@ class ListBackend(BaseBackend):
         super().__init__(component_manager)
         # TODO: convert to list
         self.component_types: list[BaseComponent] = []
-        self.components = {}
-        # TODO: actually write good type hints
+        self.components: dict[int, dict[Entity, BaseComponent]] = {}
 
     def _add_component_type(self, component_type: BaseComponent):
         """Adds a component type. You generally don't need to manually call this if your components are subclasses of BaseComponent"""
@@ -45,16 +44,11 @@ class ListBackend(BaseBackend):
         try:
             del self.components[component_type._uid][entity]
         except KeyError:
-            raise EntityDoesNotHaveComponent()
+            raise EntityDoesNotHaveComponent(entity, component_type)
 
     def get_entity_components(
         self, entity: Entity, component_types: list[BaseComponent]
     ):
-        # most time is spent here
-        # big brain time: What if I did components[entity][comp_type]
-        # instead of components[comp_type][entity]
-        # LOL
-        # wait I also have to change it to use a list so this is kinda useless.
         try:
             components = []
             for component_type in component_types:
@@ -62,7 +56,7 @@ class ListBackend(BaseBackend):
                 components.append(component)
             return components
         except KeyError:
-            raise EntityDoesNotHaveComponent()
+            return EntityDoesNotHaveComponent(entity, component_type)
 
     def get_component_types(self):
         for component_type in self.component_types:

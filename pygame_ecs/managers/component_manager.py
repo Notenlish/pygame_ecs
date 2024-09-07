@@ -15,8 +15,7 @@ class ComponentManager:
         self.backend = ListBackend(self) if backend is None else backend
 
     def get_entity_components(self, entity, component_types):
-        components = self.backend.get_entity_components(entity, component_types)
-        return components
+        return self.backend.get_entity_components(entity, component_types)
 
     def get_component_types(self):
         return self.backend.get_component_types()

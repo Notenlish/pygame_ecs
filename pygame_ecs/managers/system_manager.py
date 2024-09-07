@@ -29,6 +29,7 @@ class SystemManager:
         """Updates all of the systems that are active.
         NOTE: For updating values of systems, just set their values before calling this function.
         """
+        # TODO: fix
         for system in self.systems:
             if len(system.required_component_types) > 0:
                 for entity in self.entity_manager.entities.keys():
@@ -43,7 +44,7 @@ class SystemManager:
                         )
                         system.update_entity(entity, components)
                     except EntityDoesNotHaveComponent:
-                        continue
+                        pass
             else:
                 system.update()
         self.entity_manager._clear_limbo()
