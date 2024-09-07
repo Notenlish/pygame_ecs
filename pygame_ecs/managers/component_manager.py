@@ -1,34 +1,34 @@
 import typing
 
-from pygame_ecs.backends.list import ListBackend
-from pygame_ecs.backends.base import BaseBackend
-from pygame_ecs.components.base import BaseComponent
+from pygame_ecs.components.base_component import BaseComponent
+from pygame_ecs.entity import Entity
+from pygame_ecs.exceptions import EntityDoesNotHaveComponent
 
 ComponentInstanceType = typing.TypeVar("ComponentInstanceType", bound=BaseComponent)
 
 
 class ComponentManager:
-    # TODO: remove this
-    __slots__ = ("backend",)
-
-    def __init__(self, backend: BaseBackend = None) -> None:
-        self.backend = ListBackend(self) if backend is None else backend
-
-    def get_entity_components(self, entity, component_types):
-        return self.backend.get_entity_components(entity, component_types)
-
-    def get_component_types(self):
-        return self.backend.get_component_types()
+    __slots__ = ("components",)
+    def __init__(self) -> None:
+        self.components: dict[typing.Type[BaseComponent], dict[Entity, ComponentInstanceType]] = {}  # type: ignore
 
     def init_components(self):
-        self.backend.init_components()
-
-    def _add_component_type(self, component_type):
-        """Adds a component type. You generally shouldn't need to manually call this if your components are subclasses of BaseComponent"""
-        self.backend._add_component_type(component_type)
+        # get all subclasses using BaseComponent
+        component_subclasses = BaseComponent.__subclasses__()
+        for component_subclass in component_subclasses:
+            self.components[component_subclass] = {}
 
     def add_component(self, entity, component):
-        self.backend.add_component(entity, component)
+        """Adds a component to an entity
+
+        Args:
+            entity (Entity): Entity instance
+            component (BaseComponent): Component that subclasses BaseComponent
+        """
+        self.components[type(component)][entity] = component
 
     def remove_component(self, entity, component_type):
-        self.backend.remove_component(entity, component_type)
+        try:
+            del self.components[component_type][entity]
+        except KeyError:
+            raise EntityDoesNotHaveComponent(entity, component_type)

@@ -1,11 +1,10 @@
 from pygame_ecs.entity import Entity
-from pygame_ecs.exceptions import EntityAlreadyInLimbo, EntityDoesNotHaveComponent
+from pygame_ecs.exceptions import EntityAlreadyInLimbo
 from pygame_ecs.managers.component_manager import ComponentManager
 
 
 class EntityManager:
     __slots__ = ("component_manager", "entities", "dead_entities", "_limbo", "count")
-
     def __init__(self, component_manager: ComponentManager) -> None:
         self.component_manager = component_manager
         self.entities: dict[Entity, None] = {}
@@ -23,7 +22,7 @@ class EntityManager:
         return entity
 
     def kill_entity(self, entity: Entity):
-        """Kills an entity by moving it into `limbo`. Entities in limbo is removed from entities once ._clear_limbo is called.
+        """Kills an entity by moving it into `limbo`. Entities in limbo is removed from  entities once ._clear_limbo is called.
         NOTE: ._clear_limbo is called automatically when all of the active systems are done updating.
 
         Args:
@@ -37,10 +36,10 @@ class EntityManager:
             raise EntityAlreadyInLimbo(entity)
         except KeyError:  # not in limbo
             self._limbo[entity] = None
-        for component_type in self.component_manager.get_component_types():
+        for component_type in self.component_manager.components.keys():
             try:
-                self.component_manager.remove_component(entity, component_type)
-            except EntityDoesNotHaveComponent:
+                del self.component_manager.components[component_type][entity]
+            except KeyError:
                 pass
 
     def _clear_limbo(self):

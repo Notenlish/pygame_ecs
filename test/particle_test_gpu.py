@@ -5,7 +5,7 @@ import pygame
 from pygame._sdl2 import Renderer, Texture, Window, get_drivers
 
 import pygame_ecs
-from pygame_ecs.components.base import BaseComponent
+from pygame_ecs.components.base_component import BaseComponent
 
 pygame.init()
 
@@ -159,9 +159,7 @@ while running:
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
-    pygame.display.set_caption(
-        f"FPS: {clock.get_fps()} COUNT: {len(entity_manager.entities)}"
-    )
+    pygame.display.set_caption(f"FPS: {clock.get_fps()} COUNT: {len(entity_manager.entities)}")
     ball_physics.dt = dt
     renderer.clear()
     system_manager.update_entities()
