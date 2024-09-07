@@ -23,7 +23,7 @@ ENTITY_AMOUNT = 1_000 * 4
 # actually add the systems into
 
 
-class Position(pygame_ecs.Component):
+class Position(pygame_ecs.BaseComponent):
     __slots__ = ("x", "y")
 
     def __init__(self, x: int, y: int):
@@ -32,7 +32,7 @@ class Position(pygame_ecs.Component):
         self.y = y
 
 
-class Velocity(pygame_ecs.Component):
+class Velocity(pygame_ecs.BaseComponent):
     __slots__ = ("vec",)
 
     def __init__(self, vec: list[int | float]) -> None:
@@ -40,7 +40,7 @@ class Velocity(pygame_ecs.Component):
         self.vec = vec
 
 
-class BallPhysics(pygame_ecs.System):
+class BallPhysics(pygame_ecs.BaseSystem):
     def __init__(self) -> None:
         super().__init__(required_component_types=[Position, Velocity])
 
@@ -102,7 +102,7 @@ for _ in range(
 
 REPEAT = 1_000
 
-result = timeit(lambda: system_manager._update_entities(), number=REPEAT)  # type: ignore
+result = timeit(lambda: system_manager.update_entities(), number=REPEAT)  # type: ignore
 print(
     f"Took a total of {result} and {result/REPEAT} roughly for each frame, using {len(entity_manager.entities)} entities, setting: {arg}"
 )

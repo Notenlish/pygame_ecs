@@ -5,7 +5,7 @@ import pygame
 from pygame._sdl2 import Renderer, Texture, Window, get_drivers
 
 import pygame_ecs
-from pygame_ecs.components.base import Component
+from pygame_ecs.components.base import BaseComponent
 
 pygame.init()
 
@@ -14,7 +14,7 @@ WIDTH = 800
 HEIGHT = 600
 
 
-class Position(pygame_ecs.Component):
+class Position(pygame_ecs.BaseComponent):
     __slots__ = ("x", "y")
 
     def __init__(self, x: int, y: int):
@@ -23,7 +23,7 @@ class Position(pygame_ecs.Component):
         self.y = y
 
 
-class BallRenderer(pygame_ecs.Component):
+class BallRenderer(pygame_ecs.BaseComponent):
     __slots__ = ("radius", "color")
 
     def __init__(self, radius: int, color) -> None:
@@ -32,7 +32,7 @@ class BallRenderer(pygame_ecs.Component):
         self.color = color
 
 
-class Velocity(pygame_ecs.Component):
+class Velocity(pygame_ecs.BaseComponent):
     __slots__ = "vec"
 
     def __init__(self, vec: pygame.math.Vector2) -> None:
@@ -40,7 +40,7 @@ class Velocity(pygame_ecs.Component):
         self.vec = vec
 
 
-class BallDrawSystem(pygame_ecs.System):
+class BallDrawSystem(pygame_ecs.BaseSystem):
     def __init__(self, texture: Texture) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.texture = texture
@@ -55,7 +55,7 @@ class BallDrawSystem(pygame_ecs.System):
         )
 
 
-class BallPhysics(pygame_ecs.System):
+class BallPhysics(pygame_ecs.BaseSystem):
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, Velocity])
         self.dt = 0
@@ -102,7 +102,7 @@ def remove_entity(entity_manager: pygame_ecs.EntityManager, amount=1):
             pass
 
 
-class BallAdd(pygame_ecs.System):
+class BallAdd(pygame_ecs.BaseSystem):
     def __init__(self, component_manager, entity_manager) -> None:
         super().__init__(required_component_types=[])
         self.component_manager = component_manager
@@ -164,7 +164,7 @@ while running:
     )
     ball_physics.dt = dt
     renderer.clear()
-    system_manager._update_entities()
+    system_manager.update_entities()
     renderer.present()
     dt = clock.tick(60)
 

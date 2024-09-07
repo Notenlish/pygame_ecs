@@ -5,21 +5,21 @@ import pygame
 import pygame_ecs
 
 
-class Position(pygame_ecs.Component):
+class Position(pygame_ecs.BaseComponent):
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
 
 
-class BallRenderer(pygame_ecs.Component):
+class BallRenderer(pygame_ecs.BaseComponent):
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
         self.color = color
 
 
-class BallDrawSystem(pygame_ecs.System):
+class BallDrawSystem(pygame_ecs.BaseSystem):
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
@@ -62,7 +62,7 @@ while True:
         if event.type == pygame.QUIT:
             raise SystemExit
 
-    system_manager._update_entities()
+    system_manager.update_entities()
     pygame.display.update()
     clock.tick(60)
     pygame.display.set_caption(f"FPS: {clock.get_fps()}")

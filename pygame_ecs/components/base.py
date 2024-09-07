@@ -1,4 +1,4 @@
-class Component:
+class BaseComponent:
     # pygame_ecs automatically sets uid for classes so instead of hashing
     # the whole class python can just hash this attribute
     _uid = None

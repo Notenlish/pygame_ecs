@@ -1,13 +1,18 @@
+import typing
+
 from pygame_ecs.backends.list import ListBackend
 from pygame_ecs.backends.base import BaseBackend
+from pygame_ecs.components.base import BaseComponent
+
+ComponentInstanceType = typing.TypeVar("ComponentInstanceType", bound=BaseComponent)
 
 
 class ComponentManager:
     # TODO: remove this
     __slots__ = ("backend",)
 
-    def __init__(self, backend_type: type[BaseBackend] = None) -> None:
-        self.backend = ListBackend(self) if backend_type is None else backend_type
+    def __init__(self, backend: BaseBackend = None) -> None:
+        self.backend = ListBackend(self) if backend is None else backend
 
     def get_entity_components(self, entity, component_types):
         components = self.backend.get_entity_components(entity, component_types)

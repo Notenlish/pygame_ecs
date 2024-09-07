@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pygame_ecs.managers.component_manager import ComponentManager
 
-from pygame_ecs.components.base import Component
+from pygame_ecs.components.base import BaseComponent
 from pygame_ecs.exceptions import EntityDoesNotHaveComponent
 
 
@@ -15,11 +15,11 @@ class BaseBackend:
     def __init__(self, component_manager: "ComponentManager") -> None:
         self.component_manager = component_manager
 
-    def _init_component(self, component_type: Component):
+    def _init_component(self, component_type: BaseComponent):
         """Override this."""
 
     def init_components(self):
-        component_subclasses = Component.__subclasses__()
+        component_subclasses = BaseComponent.__subclasses__()
         i = 0
         for component_subclass in component_subclasses:
             component_subclass._uid = i
@@ -37,6 +37,6 @@ class BaseBackend:
 
     def get_entity_components(self, entity, component_types):
         """Override this."""
-
+    
     def get_component_types(self):
         pass

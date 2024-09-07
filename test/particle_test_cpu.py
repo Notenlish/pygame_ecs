@@ -5,35 +5,31 @@ import pygame
 import pygame_ecs
 
 
-class Position(pygame_ecs.Component):
+class Position(pygame_ecs.BaseComponent):
     __slots__ = ("x", "y")
-
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
 
 
-class BallRenderer(pygame_ecs.Component):
+class BallRenderer(pygame_ecs.BaseComponent):
     __slots__ = ("radius", "color")
-
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
         self.color = color
 
 
-class Velocity(pygame_ecs.Component):
+class Velocity(pygame_ecs.BaseComponent):
     __slots__ = ("vec",)
-
     def __init__(self, vec: pygame.math.Vector2) -> None:
         super().__init__()
         self.vec = vec
 
 
-class BallDrawSystem(pygame_ecs.System):
+class BallDrawSystem(pygame_ecs.BaseSystem):
     __slots__ = ("screen",)
-
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
@@ -41,14 +37,11 @@ class BallDrawSystem(pygame_ecs.System):
     def update_entity(self, entity, entity_components):
         pos: Position = entity_components[Position]  # type: ignore
         ball_renderer: BallRenderer = entity_components[BallRenderer]  # type: ignore
-        pygame.draw.circle(
-            self.screen, ball_renderer.color, (pos.x, pos.y), ball_renderer.radius
-        )  # type: ignore
+        pygame.draw.circle(self.screen, ball_renderer.color, (pos.x, pos.y), ball_renderer.radius)  # type: ignore
 
 
-class BallPhysics(pygame_ecs.System):
+class BallPhysics(pygame_ecs.BaseSystem):
     __slots__ = ("dt", "screen")
-
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, Velocity])
         self.dt = 0
@@ -109,13 +102,13 @@ class App:
             self.get_input()
             self.screen.fill("black")
             self.ball_physics.dt = self.dt
-            self.system_manager._update_entities()
+            self.system_manager.update_entities()
             self.dt = self.clock.tick(60)
             pygame.display.update()
 
     def update(self):
         self.ball_physics.dt = self.dt
-        self.system_manager._update_entities(
+        self.system_manager.update_entities(
             self.entities, self.component_manager, self.ball_physics
         )
 
