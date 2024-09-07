@@ -21,16 +21,18 @@ ENTITY_AMOUNT = 1_000 * 4
 # actually add the systems into
 
 
-class Position(pygame_ecs.BaseComponent):
+class Position(pygame_ecs.Component):
     __slots__ = ("x", "y")
+
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
 
 
-class Velocity(pygame_ecs.BaseComponent):
+class Velocity(pygame_ecs.Component):
     __slots__ = ("vec",)
+
     def __init__(self, vec: list[int | float]) -> None:
         super().__init__()
         self.vec = vec

@@ -5,14 +5,14 @@ import pygame
 import pygame_ecs
 
 
-class Position(pygame_ecs.BaseComponent):
+class Position(pygame_ecs.Component):
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
 
 
-class BallRenderer(pygame_ecs.BaseComponent):
+class BallRenderer(pygame_ecs.Component):
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius

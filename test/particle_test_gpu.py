@@ -5,7 +5,7 @@ import pygame
 from pygame._sdl2 import Renderer, Texture, Window, get_drivers
 
 import pygame_ecs
-from pygame_ecs.components.base_component import BaseComponent
+from pygame_ecs.components.base_component import Component
 
 pygame.init()
 
@@ -14,7 +14,7 @@ WIDTH = 800
 HEIGHT = 600
 
 
-class Position(pygame_ecs.BaseComponent):
+class Position(pygame_ecs.Component):
     __slots__ = ("x", "y")
 
     def __init__(self, x: int, y: int):
@@ -23,7 +23,7 @@ class Position(pygame_ecs.BaseComponent):
         self.y = y
 
 
-class BallRenderer(pygame_ecs.BaseComponent):
+class BallRenderer(pygame_ecs.Component):
     __slots__ = ("radius", "color")
 
     def __init__(self, radius: int, color) -> None:
@@ -32,7 +32,7 @@ class BallRenderer(pygame_ecs.BaseComponent):
         self.color = color
 
 
-class Velocity(pygame_ecs.BaseComponent):
+class Velocity(pygame_ecs.Component):
     __slots__ = "vec"
 
     def __init__(self, vec: pygame.math.Vector2) -> None:
@@ -159,7 +159,9 @@ while running:
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
-    pygame.display.set_caption(f"FPS: {clock.get_fps()} COUNT: {len(entity_manager.entities)}")
+    pygame.display.set_caption(
+        f"FPS: {clock.get_fps()} COUNT: {len(entity_manager.entities)}"
+    )
     ball_physics.dt = dt
     renderer.clear()
     system_manager.update_entities()

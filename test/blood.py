@@ -6,9 +6,10 @@ import time
 
 import pygame
 
-import pygame_ecs
-from pygame_ecs.components.base_component import BaseComponent
+from pygame_ecs.components.base_component import Component
 from pygame_ecs.entity import Entity
+from pygame_ecs.managers import ComponentManager, EntityManager, SystemManager
+from pygame_ecs.systems import System
 
 start = time.time()
 
@@ -16,21 +17,21 @@ WIDTH = 800
 HEIGHT = 600
 
 
-class Position(pygame_ecs.BaseComponent):
+class Position(Component):
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
 
 
-class BallRenderer(pygame_ecs.BaseComponent):
+class BallRenderer(Component):
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
         self.color = color
 
 
-class Velocity(pygame_ecs.BaseComponent):
+class Velocity(Component):
     def __init__(
         self, vel: pygame.math.Vector2, time_offset: float | int, wave_length: float
     ) -> None:
@@ -40,12 +41,14 @@ class Velocity(pygame_ecs.BaseComponent):
         self.wave_length = wave_length
 
 
-class BallDrawSystem(pygame_ecs.BaseSystem):
+class BallDrawSystem(System):
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
 
     def update_entity(self, entity, entity_components):
+        # TODO: what matters more? ugly syntax with good performance?
+        # OR, good syntax with worse performance?
         pos: Position = entity_components[Position]
         ball_renderer: BallRenderer = entity_components[BallRenderer]
         pygame.draw.circle(
@@ -53,7 +56,7 @@ class BallDrawSystem(pygame_ecs.BaseSystem):
         )
 
 
-class BallPhysics(pygame_ecs.BaseSystem):
+class BallPhysics(System):
     def __init__(self, dt) -> None:
         super().__init__(required_component_types=[Position, Velocity, BallRenderer])
         self.dt = dt
@@ -77,9 +80,9 @@ class BallPhysics(pygame_ecs.BaseSystem):
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-component_manager = pygame_ecs.ComponentManager()
-entity_manager = pygame_ecs.EntityManager(component_manager)
-system_manager = pygame_ecs.SystemManager(entity_manager, component_manager)
+component_manager = ComponentManager()
+entity_manager = EntityManager(component_manager)
+system_manager = SystemManager(entity_manager, component_manager)
 ball_draw_system = BallDrawSystem(screen)
 ball_physics_system = BallPhysics(dt=0)
 system_manager.add_system(ball_draw_system)

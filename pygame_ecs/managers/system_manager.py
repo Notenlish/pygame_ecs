@@ -2,19 +2,20 @@ import typing
 
 from pygame_ecs.managers.component_manager import ComponentManager
 from pygame_ecs.managers.entity_manager import EntityManager
-from pygame_ecs.systems.base_system import BaseSystem
+from pygame_ecs.systems.base_system import System
 
-SystemType = typing.TypeVar("SystemType", bound=BaseSystem)
+SystemType = typing.TypeVar("SystemType", bound=System)
 
 
 class SystemManager:
     __slots__ = ("entity_manager", "component_manager", "systems")
+
     def __init__(
         self, entity_manager: EntityManager, component_manager: ComponentManager
     ) -> None:
         self.entity_manager = entity_manager
         self.component_manager = component_manager
-        self.systems: list[BaseSystem] = []
+        self.systems: list[System] = []
 
     def add_system(self, system: SystemType):
         system.entity_manager = self.entity_manager
@@ -34,10 +35,12 @@ class SystemManager:
                     components_to_give = {}
                     for comp_type in system.required_component_types:
                         try:
-                            comp = self.component_manager.components[comp_type][entity]
+                            comp = self.component_manager.components[comp_type._uid][
+                                entity
+                            ]
                             components_to_give[type(comp)] = comp
                         except KeyError:
-                            self.component_manager.components[comp_type]
+                            self.component_manager.components[comp._uid]
                             has_components = False
                             break
                     if has_components:
