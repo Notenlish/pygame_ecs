@@ -1,11 +1,7 @@
-import typing
-
 from pygame_ecs.managers.component_manager import ComponentManager
 from pygame_ecs.managers.entity_manager import EntityManager
-from pygame_ecs.systems.base_system import BaseSystem
+from pygame_ecs.systems.base_system import System
 from pygame_ecs.exceptions import EntityDoesNotHaveComponent
-
-SystemType = typing.TypeVar("SystemType", bound=BaseSystem)
 
 
 class SystemManager:
@@ -16,19 +12,16 @@ class SystemManager:
     ) -> None:
         self.entity_manager = entity_manager
         self.component_manager = component_manager
-        self.systems: list[BaseSystem] = []
+        self.systems: list[System] = []
 
-    def add_system(self, system: SystemType):
+    def add_system(self, system: type[System]):
         system.entity_manager = self.entity_manager
         self.systems.append(system)
 
-    def remove_system(self, system: SystemType):
+    def remove_system(self, system: type[System]):
         self.systems.remove(system)
 
-    def update_entities(self):
-        """Updates all of the systems that are active.
-        NOTE: For updating values of systems, just set their values before calling this function.
-        """
+    def _update_entities(self):
         for system in self.systems:
             if len(system.required_component_types) > 0:
                 for entity in self.entity_manager.entities.keys():

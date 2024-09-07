@@ -2,6 +2,7 @@ class Entity(object):
     __slots__ = ("_id",)
 
     def __init__(self, id):
+        """Don't instance Entity manually. Use `ECS.create_entity()` function."""
         self._id = id
 
     def __repr__(self):

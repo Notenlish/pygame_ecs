@@ -8,8 +8,8 @@ import time
 import pygame
 
 import pygame_ecs
-from pygame_ecs.components.base import BaseComponent
-from pygame_ecs.systems.base_system import BaseSystem
+from pygame_ecs.components.base import Component
+from pygame_ecs.systems.base_system import System
 from pygame_ecs.entity import Entity
 
 try:
@@ -25,21 +25,21 @@ WIDTH = 800
 HEIGHT = 600
 
 
-class Position(BaseComponent):
+class Position(Component):
     def __init__(self, x: int, y: int):
         super().__init__()
         self.x = x
         self.y = y
 
 
-class BallRenderer(BaseComponent):
+class BallRenderer(Component):
     def __init__(self, radius: int, color) -> None:
         super().__init__()
         self.radius = radius
         self.color = color
 
 
-class Velocity(BaseComponent):
+class Velocity(Component):
     def __init__(
         self, vel: pygame.math.Vector2, time_offset: float | int, wave_length: float
     ) -> None:
@@ -49,7 +49,7 @@ class Velocity(BaseComponent):
         self.wave_length = wave_length
 
 
-class BallDrawSystem(BaseSystem):
+class BallDrawSystem(System):
     def __init__(self, screen) -> None:
         super().__init__(required_component_types=[Position, BallRenderer])
         self.screen = screen
@@ -62,7 +62,7 @@ class BallDrawSystem(BaseSystem):
         )
 
 
-class BallPhysics(BaseSystem):
+class BallPhysics(System):
     def __init__(self, dt) -> None:
         super().__init__(required_component_types=[Position, Velocity, BallRenderer])
         self.dt = dt
@@ -124,7 +124,7 @@ while True:
             raise SystemExit
 
     ball_physics_system.dt = clock.get_time() / 1000
-    system_manager.update_entities()
+    system_manager._update_entities()
     pygame.display.update()
     clock.tick(60)
     pygame.display.set_caption(
