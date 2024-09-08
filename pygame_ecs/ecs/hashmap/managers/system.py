@@ -1,5 +1,5 @@
-from pygame_ecs.managers.component_manager import ComponentManager
-from pygame_ecs.managers.entity_manager import EntityManager
+from pygame_ecs.managers.component import ComponentManager
+from pygame_ecs.managers.entity import EntityManager
 from pygame_ecs.systems.base import System
 
 

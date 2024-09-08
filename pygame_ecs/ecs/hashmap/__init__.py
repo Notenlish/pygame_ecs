@@ -1,7 +1,7 @@
 from pygame_ecs.ecs import ECS
-from pygame_ecs.ecs.hashmap.managers.entity_manager import EntityManager
-from pygame_ecs.ecs.hashmap.managers.component_manager import ComponentManager
-from pygame_ecs.ecs.hashmap.managers.system_manager import SystemManager
+from pygame_ecs.ecs.hashmap.managers.entity import EntityManager
+from pygame_ecs.ecs.hashmap.managers.component import ComponentManager
+from pygame_ecs.ecs.hashmap.managers.system import SystemManager
 
 
 class HashmapECS(ECS):

@@ -1,7 +1,7 @@
 from pygame_ecs.components.base import Component
 from pygame_ecs.entity import Entity
 from pygame_ecs.exceptions import EntityDoesNotHaveComponent
-from pygame_ecs.managers.component_manager import ComponentManager
+from pygame_ecs.managers.component import ComponentManager
 
 
 class ComponentManager(ComponentManager):

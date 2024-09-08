@@ -64,6 +64,7 @@ class BallPhysics(System):
         pos: Position = entity_components[Position]
         velocity: Velocity = entity_components[Velocity]
         ball_renderer: BallRenderer = entity_components[BallRenderer]
+
         pos.y += (
             math.sin(self.dif + velocity.time_offset)
             * (1 / ball_renderer.radius)

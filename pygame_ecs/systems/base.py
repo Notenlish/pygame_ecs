@@ -15,7 +15,7 @@ class System:
         self,
         entity: Entity,
         # What a shitty type hint, fuck this
-        entity_components: dict[type[CompType], Component],
+        entity_components: dict[type[Component], CompType],
     ):
         """This function is called for every entity that has the required components if the required component size is bigger than 0.
 
