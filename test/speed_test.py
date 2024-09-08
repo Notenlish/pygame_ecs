@@ -3,7 +3,7 @@ import random
 from sys import argv
 from timeit import timeit
 
-from pygame_ecs.components.base_component import Component
+from pygame_ecs.components.base import Component
 from pygame_ecs.managers import ComponentManager, EntityManager, SystemManager
 from pygame_ecs.systems import System
 
@@ -74,7 +74,7 @@ for _ in range(ENTITY_AMOUNT):
         (random.random() - 0.5) * 400 / 1000,
         (random.random() - 0.5) * 400 / 1000,
     ]
-    entity = entity_manager.add_entity()
+    entity = entity_manager.create_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
     if arg == "perfect":
         component_manager.add_component(entity, Velocity(vel))
@@ -96,7 +96,7 @@ for _ in range(
         (random.random() - 0.5) * 400 / 1000,
         (random.random() - 0.5) * 400 / 1000,
     ]
-    entity = entity_manager.add_entity()
+    entity = entity_manager.create_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
     if arg == "perfect":
         component_manager.add_component(entity, Velocity(vel))

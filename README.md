@@ -11,7 +11,7 @@ then just import via: `import pygame_ecs`
 Create an entity
 
 ```python
-entity = entity_manager.add_entity()
+entity = entity_manager.create_entity()
 ```
 
 You can delete an entity like this:
@@ -106,7 +106,7 @@ for _ in range(200):
         (random.random() - 0.5) * 400 / 1000,
         (random.random() - 0.5) * 400 / 1000,
     )
-    entity = entity_manager.add_entity()
+    entity = entity_manager.create_entity()
     component_manager.add_component(entity, Position(center[0], center[1]))
     component_manager.add_component(entity, BallRenderer(radius, color))
 

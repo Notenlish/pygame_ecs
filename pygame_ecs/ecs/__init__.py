@@ -1,0 +1,19 @@
+from pygame_ecs.systems.base import System
+from pygame_ecs.entity import Entity
+from pygame_ecs.components.base import Component
+
+
+class ECS:
+    """Base ECS class all ECS systems must subclass from."""
+
+    def __init__(self) -> None: ...
+
+    def add_system(self, system: System): ...
+
+    def init_components(self): ...
+
+    def add_component(self, entity: Entity, component: type[Component]): ...
+
+    def update_entities(self): ...
+
+    def create_entity(self) -> Entity: ...

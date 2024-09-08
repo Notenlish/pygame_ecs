@@ -4,7 +4,7 @@ import pygame
 from pygame._sdl2 import Renderer, Texture, Window
 
 
-from pygame_ecs.components.base_component import Component
+from pygame_ecs.components.base import Component
 from pygame_ecs.managers import ComponentManager, EntityManager, SystemManager
 from pygame_ecs.systems import System
 from pygame_ecs.exceptions import EntityAlreadyInLimbo

@@ -1,10 +1,6 @@
-import typing
-
 from pygame_ecs.managers.component_manager import ComponentManager
 from pygame_ecs.managers.entity_manager import EntityManager
-from pygame_ecs.systems.base_system import System
-
-SystemType = typing.TypeVar("SystemType", bound=System)
+from pygame_ecs.systems.base import System
 
 
 class SystemManager:
@@ -17,11 +13,10 @@ class SystemManager:
         self.component_manager = component_manager
         self.systems: list[System] = []
 
-    def add_system(self, system: SystemType):
-        system.entity_manager = self.entity_manager
+    def add_system(self, system: System):
         self.systems.append(system)
 
-    def remove_system(self, system: SystemType):
+    def remove_system(self, system: System):
         self.systems.remove(system)
 
     def update_entities(self):
@@ -29,11 +24,11 @@ class SystemManager:
         NOTE: For updating values of systems, just set their values before calling this function.
         """
         for system in self.systems:
-            if len(system.required_component_types) > 0:
+            if len(system.component_types) > 0:
                 for entity in self.entity_manager.entities.keys():
                     has_components = True
                     components_to_give = {}
-                    for comp_type in system.required_component_types:
+                    for comp_type in system.component_types:
                         try:
                             comp = self.component_manager.components[comp_type._uid][
                                 entity

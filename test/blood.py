@@ -6,10 +6,8 @@ import time
 
 import pygame
 
-from pygame_ecs.components.base_component import Component
-from pygame_ecs.entity import Entity
-from pygame_ecs.managers import ComponentManager, EntityManager, SystemManager
-from pygame_ecs.systems import System
+from pygame_ecs import Entity, Component, System
+from pygame_ecs.ecs.hashmap import HashmapECS
 
 start = time.time()
 
@@ -42,9 +40,9 @@ class Velocity(Component):
 
 
 class BallDrawSystem(System):
-    def __init__(self, screen) -> None:
-        super().__init__(required_component_types=[Position, BallRenderer])
+    def __init__(self, screen: pygame.Surface) -> None:
         self.screen = screen
+        super().__init__(component_types=[Position, BallRenderer])
 
     def update_entity(self, entity, entity_components):
         # TODO: what matters more? ugly syntax with good performance?
@@ -58,15 +56,16 @@ class BallDrawSystem(System):
 
 class BallPhysics(System):
     def __init__(self, dt) -> None:
-        super().__init__(required_component_types=[Position, Velocity, BallRenderer])
+        super().__init__(component_types=[Position, Velocity, BallRenderer])
         self.dt = dt
+        self.dif = 0
 
     def update_entity(self, entity: Entity, entity_components):
         pos: Position = entity_components[Position]
         velocity: Velocity = entity_components[Velocity]
         ball_renderer: BallRenderer = entity_components[BallRenderer]
         pos.y += (
-            math.sin(time.time() - start + velocity.time_offset)
+            math.sin(self.dif + velocity.time_offset)
             * (1 / ball_renderer.radius)
             * wave_length
         )
@@ -80,14 +79,17 @@ class BallPhysics(System):
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-component_manager = ComponentManager()
-entity_manager = EntityManager(component_manager)
-system_manager = SystemManager(entity_manager, component_manager)
+# component_manager = ComponentManager()
+# entity_manager = EntityManager(component_manager)
+# system_manager = SystemManager(entity_manager, component_manager)
+ecs = HashmapECS()
+
 ball_draw_system = BallDrawSystem(screen)
 ball_physics_system = BallPhysics(dt=0)
-system_manager.add_system(ball_draw_system)
-system_manager.add_system(ball_physics_system)
-component_manager.init_components()
+
+ecs.add_system(ball_draw_system)
+ecs.add_system(ball_physics_system)
+ecs.init_components()
 
 for _ in range(2000):
     center = (
@@ -103,10 +105,10 @@ for _ in range(2000):
         time_offset=time_offset,
         wave_length=wave_length,
     )
-    entity = entity_manager.add_entity()
-    component_manager.add_component(entity, Position(center[0], center[1]))
-    component_manager.add_component(entity, BallRenderer(radius, color))
-    component_manager.add_component(entity, velocity)
+    entity = ecs.create_entity()
+    ecs.add_component(entity, Position(center[0], center[1]))
+    ecs.add_component(entity, BallRenderer(radius, color))
+    ecs.add_component(entity, velocity)
 
 while True:
     screen.fill((34, 4, 6))
@@ -115,7 +117,8 @@ while True:
             raise SystemExit
 
     ball_physics_system.dt = clock.get_time() / 1000
-    system_manager.update_entities()
+    ball_physics_system.dif = time.time() - start
+    ecs.update_entities()
     pygame.display.update()
     clock.tick(60)
     pygame.display.set_caption(f"FPS: {clock.get_fps()}")
