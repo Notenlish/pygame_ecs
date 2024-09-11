@@ -3,9 +3,7 @@ import random
 from sys import argv
 from timeit import timeit
 
-from pygame_ecs.components.base import Component
-from pygame_ecs.managers import ComponentManager, EntityManager, SystemManager
-from pygame_ecs.systems import System
+# TODO: rewrite for hashmap ecs
 
 try:
     arg = argv[1]

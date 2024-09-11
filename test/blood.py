@@ -9,6 +9,8 @@ import pygame
 from pygame_ecs import Entity, Component, System
 from pygame_ecs.ecs.hashmap import HashmapECS
 
+# TODO: implement a particleECS
+
 start = time.time()
 
 WIDTH = 800
@@ -61,6 +63,7 @@ class BallPhysics(System):
         self.dif = 0
 
     def update_entity(self, entity: Entity, entity_components):
+        # Use this for strict type checking: pos = cast(Position, entity_components[Position])
         pos: Position = entity_components[Position]
         velocity: Velocity = entity_components[Velocity]
         ball_renderer: BallRenderer = entity_components[BallRenderer]
